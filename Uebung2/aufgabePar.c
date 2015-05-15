@@ -1,18 +1,10 @@
-/* Dies ist ein stark vereinfachtes Beispiel, angelehnt  
-* an eine Berechnung der Gesamtenergie eines atomaren Systems aus dem 
-* Softwarepacket ABINIT.
-*
-* Dabei muss jedes einzelne Atom in eine von 3 Raumrichtungen verschoben
-* und dann jeweils die Energie für das gesamte System berechnet werden.
-* Die Energie wird gespeichert. Am Ende soll die größte, bei diesen 
-* Berechnungen gefundene, Energie zurückgegeben werden.
-* 
-* Letzte Änderung: 20120629
-* (indent -kr -i8)
-*/
+#include "mpi.h"
+#include <stdlib.h>
 #include <stdio.h>
-#include <malloc.h>
-#include <unistd.h>
+
+#define MASTER 0
+#define TAG    1
+
 
 /* Funktion zur Simulation einer Berechnung */
 int calc_energy(int atoms, float **atom_positions)
@@ -34,8 +26,17 @@ int calc_energy(int atoms, float **atom_positions)
 	return energy;
 }
 
-int main(int argc, char **argv)
-{
+int main( int  argc ,  char**argv )  {
+
+	MPI_Status status;
+	int myRank, nTasks, i, Buffer;
+
+	//INIT
+	MPI_Init(&argc , &argv );
+	MPI_Comm_size(MPI_COMM_WORLD, &nTasks);
+	MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+
+	//******************************************************************
 
 	int i, j;
 	int atoms;
@@ -92,10 +93,6 @@ int main(int argc, char **argv)
 		}
 	}
 
-	/* 
-	 * Berechnung 
-	 */
-
 	/* Bewege jedes Atom in eine der 3 Raumrichtungen und berechne die Energie */
 	for (i = 0; i < atoms; i++) {
 		/* Verschiebe Atom und bestimme jeweils die Energie 
@@ -104,18 +101,36 @@ int main(int argc, char **argv)
 		/* init maxenergy */
 		maxenergy = 0;
 
-		for (j = 0; j < 3; j++) {
-			/* verschieben */
-			atom_positions[i][j] += 1 * i;
-			/* Energie berechnen */
-			maxenergy = calc_energy(atoms, atom_positions);
-			if (energies[i] < maxenergy) {
-				energies[i] = maxenergy;
-			}
-			/* zurücksetzen */
-			atom_positions[i][j] -= 1 * i;
+		/*******************************************************************
+		 * Parallel Part
+		 *******************************************************************/
+		 
+		/* verschieben */
+		atom_positions[i][myRank] += 1 * i;
+		/* Energie berechnen */
+		energy = calc_energy(atoms, atom_positions);
+		/* zurücksetzen */
+		atom_positions[i][myRank] -= 1 * i;
+	
+		
+		int recvbuf[1], sendbuf[1];
+		sendbuf[0] = energy;
+		MPI_Reduce(sendbuf, recvbuf, 1, MPI_INT, MPI_MAX, MASTER, MPI_COMM_WORLD);
+		
+
+		if (myRank == MASTER)  {
+		
+			printf("Energie für Atom %d: %f \n", i + 1, recvbuf[0]);
+
+		} else {
+			
 		}
-		printf("Energie für Atom %d: %f \n", i + 1, energies[i]);
+		
+		/*******************************************************************
+		 * Parallel Part - END
+		 *******************************************************************/
+		
+		
 	}
 
 	maxenergy = 0;
@@ -124,7 +139,7 @@ int main(int argc, char **argv)
 			maxenergy = energies[i];
 		}
 	}
-	printf("Maximalenergie: %f \n", maxenergy);
+	printf("Maximalenergie: %f \n", maxenergy);	
 
 	/* Allokationen freigeben */
 	free(energies);
@@ -133,5 +148,8 @@ int main(int argc, char **argv)
 	}
 	free(atom_positions);
 
-	return 0;
+	//FIN
+	MPI_Finalize();
+return 0;
 }
+
