@@ -29,7 +29,7 @@ int calc_energy(int atoms, float **atom_positions)
 int main( int  argc ,  char**argv )  {
 
 	MPI_Status status;
-	int myRank, nTasks, i, Buffer;
+	int myRank, nTasks, Buffer;
 
 	//INIT
 	MPI_Init(&argc , &argv );
@@ -108,19 +108,20 @@ int main( int  argc ,  char**argv )  {
 		/* verschieben */
 		atom_positions[i][myRank] += 1 * i;
 		/* Energie berechnen */
-		energy = calc_energy(atoms, atom_positions);
+		maxenergy = calc_energy(atoms, atom_positions);
 		/* zurücksetzen */
 		atom_positions[i][myRank] -= 1 * i;
 	
 		
 		int recvbuf[1], sendbuf[1];
-		sendbuf[0] = energy;
+		sendbuf[0] = maxenergy;
 		MPI_Reduce(sendbuf, recvbuf, 1, MPI_INT, MPI_MAX, MASTER, MPI_COMM_WORLD);
 		
 
 		if (myRank == MASTER)  {
 		
-			printf("Energie für Atom %d: %f \n", i + 1, recvbuf[0]);
+			printf("Energie für Atom %d: %d \n", i + 1, recvbuf[0]);
+            energies[i] = recvbuf[0];
 
 		} else {
 			
