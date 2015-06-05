@@ -27,6 +27,8 @@ void generate_data(double *vertices, int num_vertices, int num_dimensions) {
 
 int main(int argc, char** argv) {
 
+    printf("starting");
+  
 	int NumRounds = 250;
 	int NumClusters = 200;
 	int NumDimensions = 10;
@@ -70,6 +72,7 @@ int main(int argc, char** argv) {
 	ClusterSizes = (int*) malloc(NumClusters*sizeof(int));
 	for (cnt=0; cnt<NumDimensions*NumClusters; cnt++) OldCentroids[cnt] = rand() / (double) RAND_MAX;
 
+	double start = MPI_Wtime();
 	/* main loop */
 	for (Round=0; Round<NumRounds; Round++) {
 
@@ -82,14 +85,8 @@ int main(int argc, char** argv) {
 		//
 		//TODO hier MPI_Bcast von OldCentroids
 		//
-		if (MyRank == 0) {
-		  MPI_Bcast(&OldCentroids, NumDimensions*NumClusters, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		  //void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm
-		} else {
-		  MPI_Status status;
-		  MPI_Recv(&OldCentroids, NumDimensions*NumClusters, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &status);
-		}
-		  
+		MPI_Bcast(OldCentroids, NumDimensions*NumClusters, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		//void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm
 
 		/* calculate new clustering for each vertex */
 		for (cnt=0; cnt<NumDimensions*NumClusters; cnt++) NewCentroids[cnt] = 0;
@@ -110,8 +107,8 @@ int main(int argc, char** argv) {
 		//
 		//TODO hier MPI_Reduce von ClusterSizes und NewCentroids (mit MPI_SUM)
 		//
-		MPI_Reduce(&ClusterSizes, &ClusterSizes, NumClusters, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-		MPI_Reduce(&NewCentroids, &NewCentroids, NumDimensions*NumClusters, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+		MPI_Reduce(ClusterSizes, ClusterSizes, NumClusters, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+		MPI_Reduce(NewCentroids, NewCentroids, NumDimensions*NumClusters, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 		
 		for (cnt=0; cnt<NumClusters; cnt++) {
 			for (cnt2=0; cnt2<NumDimensions; cnt2++) {
@@ -123,6 +120,9 @@ int main(int argc, char** argv) {
 		/* swap old and new centroids */
 		memcpy(OldCentroids, NewCentroids, NumDimensions*NumClusters*sizeof(double));
 	}
+	double fin = MPI_Wtime();
+	double wtime = fin - start;
+	printf("Time needed: %d", wtime);
 
 	MPI_Finalize();
 	free(WorkSize); free(ClusterSizes); free(NewCentroids); free(OldCentroids); free(LocalVertices);
