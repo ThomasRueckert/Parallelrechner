@@ -1,0 +1,15 @@
+13:36:06 **** Build of configuration Debug for project helloWorld ****
+make all 
+Building file: ../src/helloWorld.c
+Invoking: GCC C Compiler
+mpicc -I/usr/lib/openmpi/include -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloWorld.d" -MT"src/helloWorld.d" -o "src/helloWorld.o" "../src/helloWorld.c"
+Finished building: ../src/helloWorld.c
+ 
+Building target: helloWorld
+Invoking: GCC C Linker
+mpicc  -o "helloWorld"  ./src/helloWorld.o   
+Finished building target: helloWorld
+ 
+
+13:36:07 Build Finished (took 914ms)
+
