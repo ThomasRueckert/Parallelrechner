@@ -1,0 +1,13 @@
+plot "-" using 2 title 'sum W-Time' with linespoints
+plot "-" using 3 title 'min W-Time' with linespoints
+plot "-" using 4 title 'max W-Time' with linespoints
+
+#2
+
+
+#4
+
+#8
+
+end
+pause -1
