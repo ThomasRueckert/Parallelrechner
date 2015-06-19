@@ -1,0 +1,17 @@
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+2, 814.718014, 407.358429, 407.359585, 802.964563, 399.232665, 403.731899, 11.753451, 8.125764, 3.627687
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+4, 812.669493, 203.144763, 203.204136, 798.756271, 198.880419, 201.725141, 13.913222, 4.264344, 1.478996
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+8, 819.198199, 102.302767, 102.524401, 798.566112, 99.530053, 100.159198, 20.632087, 2.772714, 2.365204
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+16, 859.937149, 53.342213, 54.786835, 802.295096, 49.667849, 51.241902, 57.642053, 3.674364, 3.544933
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+32, 1723.332534, 53.357135, 54.389677, 1220.774137, 33.960269, 42.307128, 502.558397, 19.396866, 12.082549
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+64, 2690.817735, 40.830571, 43.412060, 1926.003337, 28.307108, 31.904469, 764.814399, 12.523463, 11.507591
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+128, 4991.154725, 35.538300, 42.586557, 3398.786651, 22.981926, 30.531645, 1592.368074, 12.556374, 12.054912
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+256, 10827.048189, 36.606413, 48.044435, 5890.786001, 18.738869, 28.777428, 4936.262188, 17.867543, 19.267007
+

@@ -1,0 +1,16 @@
+#for i in 4,8,16,32,64,128,256; do ./PRa1; done
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+#4
+#GroupSize, sum W-Time, min W-Time, max W-Time
+2, 800.863959, 400.431566, 400.432393, 796.308660, 398.117819, 398.190840, 4.555300, 2.313747, 2.241553
+4, 1257.558797, 314.366287, 314.426207, 950.871557, 198.848506, 277.173426, 306.687240, 115.517781, 37.252780
+8, 2692.852481, 336.499113, 336.730367, 1631.138596, 99.271276, 317.103757, 1061.713886, 237.227837, 19.626610
+16, 2685.679151, 167.143226, 168.570052, 1575.519939, 49.646925, 156.764025, 1110.159212, 117.496301, 11.806027
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+32, 1877.199727, 58.181820, 59.190080, 1587.935205, 47.974690, 52.297463, 289.264522, 10.207130, 6.892617
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+64, 3593.811094, 54.847089, 57.516215, 3101.683920, 46.705240, 50.663660, 492.127174, 8.141850, 6.852555
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+128, 8008.892247, 58.482514, 66.782902, 5909.655264, 39.467507, 53.995709, 2099.236983, 19.015007, 12.787193
+#GroupSize, sum W-Time, min W-Time, max W-Time, sumMathTime, minMathTime, maxMathTime, sumMpiTime, minMpiTime, maxMpiTime
+256, 19769.056124, 68.811828, 85.453112, 10918.221750, 33.902708, 53.715523, 8850.834374, 34.909120, 31.737589
