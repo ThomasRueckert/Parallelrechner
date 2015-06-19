@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
 		}
 		mathEndTime = MPI_Wtime();
 		mathTime[0]+= mathEndTime - mathStartTime;
-
+ 
 		/* swap old and new centroids */
 		memcpy(OldCentroids, NewCentroids, NumDimensions*NumClusters*sizeof(double));
 	}
@@ -141,14 +141,14 @@ int main(int argc, char** argv) {
 	
 	double sumMpiTime, minMpiTime, maxMpiTime;
 	
-	MPI_Reduce(sumWtime, wtime, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-	MPI_Reduce(sumMathTime, mathTime, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+	MPI_Reduce(wtime, sumWtime, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+	MPI_Reduce(mathTime, sumMathTime, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	
-	MPI_Reduce(minWtime, wtime, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
-	MPI_Reduce(minMathTime, mathTime, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
+	MPI_Reduce(wtime, minWtime,  1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
+	MPI_Reduce(mathTime, minMathTime, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
 
-	MPI_Reduce(maxWtime, wtime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-	MPI_Reduce(maxMathTime, mathTime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+	MPI_Reduce(wtime, maxWtime,  1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+	MPI_Reduce(mathTime,maxMathTime,  1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 	
 	sumMpiTime = sumWtime[0] - sumMathTime[0];
 	minMpiTime = minWtime[0] - minMathTime[0];
