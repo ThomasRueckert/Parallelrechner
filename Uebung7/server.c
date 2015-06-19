@@ -1,6 +1,6 @@
 /*
  * build:
- *   cc -o server server.c -lrdmacm
+ *   cc -o server server.c -lrdmacm -libverbs
  *
  * usage:
  *   server
@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <arpa/inet.h>
+#include <stdio.h>
 
 #include <infiniband/arch.h>
 #include <rdma/rdma_cma.h>
@@ -23,10 +24,20 @@ enum {
 struct pdata {
 	uint64_t	buf_va;
 	uint32_t	buf_rkey;
+	uint64_t	str_buf_va;
+	uint32_t	str_buf_rkey;
 };
 
 int main(int argc, char *argv[])
 {
+	char* stringToRead = argv[1];
+	printf("stringToRead: %s\n", stringToRead);
+	
+	if (stringToRead == NULL) {
+	  return 1;
+	}
+  
+  
 	struct pdata			rep_pdata;
 
 	struct rdma_event_channel      *cm_channel;
@@ -39,7 +50,7 @@ int main(int argc, char *argv[])
 	struct ibv_comp_channel	       *comp_chan;
 	struct ibv_cq		       *cq;
 	struct ibv_cq		       *evt_cq;
-	struct ibv_mr		       *mr;
+	struct ibv_mr		       *mr, *strmr;
 	struct ibv_qp_init_attr		qp_attr = { };
 	struct ibv_sge			sge;
 	struct ibv_send_wr		send_wr = { };
@@ -52,6 +63,7 @@ int main(int argc, char *argv[])
 	struct sockaddr_in		sin;
 
 	uint32_t		       *buf;
+	u_char 				*strBuff;
 
 	int				err;
 
@@ -110,12 +122,22 @@ int main(int argc, char *argv[])
 	buf = calloc(2, sizeof (uint32_t));
 	if (!buf)
 		return 1;
+	
+	strBuff = calloc(1, sizeof(u_char));
+	if (!strBuff)
+	      return 1;
 
 	mr = ibv_reg_mr(pd, buf, 2 * sizeof (uint32_t),
 			IBV_ACCESS_LOCAL_WRITE |
 			IBV_ACCESS_REMOTE_READ |
 			IBV_ACCESS_REMOTE_WRITE);
 	if (!mr)
+		return 1;
+	strmr = ibv_reg_mr(pd, strBuff, 1 * sizeof (u_char),
+			IBV_ACCESS_LOCAL_WRITE |
+			IBV_ACCESS_REMOTE_READ |
+			IBV_ACCESS_REMOTE_WRITE);
+	if (!strmr)
 		return 1;
 
 	qp_attr.cap.max_send_wr	 = 1;
@@ -183,6 +205,7 @@ int main(int argc, char *argv[])
 	/* Add two integers and send reply back */
 
 	buf[0] = htonl(ntohl(buf[0]) + ntohl(buf[1]));
+	printf("%d\n", buf[0]);
 
 	sge.addr   = (uintptr_t) buf;
 	sge.length = sizeof (uint32_t);
@@ -208,6 +231,23 @@ int main(int argc, char *argv[])
 		return 1;
 
 	ibv_ack_cq_events(cq, 2);
-
+	
+	
+	
+	
+	
+	
+	
+	
+	buf[0] = atoi(stringToRead);
+	printf("converted str to read: %d\n", buf[0]);
+	
+	
+	
+	
+	
+	
+	
+	
 	return 0;
 }

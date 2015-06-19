@@ -1,6 +1,6 @@
 /*
  * build:
- *   cc -o client client.c -lrdmacm
+ *   cc -o client client.c -lrdmacm -libverbs
  *
  * usage:
  *   client <servername> <val1> <val2>
@@ -28,6 +28,8 @@ enum {
 struct pdata {
 	uint64_t	buf_va;
 	uint32_t	buf_rkey;
+	uint64_t	str_buf_va;
+	uint32_t	str_buf_rkey;
 };
 
 int main(int argc, char *argv[])
@@ -43,7 +45,7 @@ int main(int argc, char *argv[])
 	struct ibv_comp_channel	       *comp_chan;
 	struct ibv_cq		       *cq;
 	struct ibv_cq		       *evt_cq;
-	struct ibv_mr		       *mr;
+	struct ibv_mr		       *mr, *strmr;
 	struct ibv_qp_init_attr		qp_attr = { };
 	struct ibv_sge			sge;
 	struct ibv_send_wr		send_wr = { };
@@ -61,6 +63,7 @@ int main(int argc, char *argv[])
 	int				n;
 
 	uint32_t		       *buf;
+	u_char 				*strBuff;
 
 	int				err;
 
@@ -121,7 +124,7 @@ int main(int argc, char *argv[])
 	if (!comp_chan)
 		return 1;
 
-	cq = ibv_create_cq(cm_id->verbs, 2, NULL, comp_chan, 0);
+	cq = ibv_create_cq(cm_id->verbs, 3, NULL, comp_chan, 0);
 	if (!cq)
 		return 1;
 
@@ -129,14 +132,18 @@ int main(int argc, char *argv[])
 		return 1;
 
 	buf = calloc(2, sizeof (uint32_t));
-	if (!buf)
+	strBuff = calloc(1, sizeof(u_char));
+	if (!buf || !strBuff)
 		return 1;
 
 	mr = ibv_reg_mr(pd, buf, 2 * sizeof (uint32_t), IBV_ACCESS_LOCAL_WRITE);
 	if (!mr)
 		return 1;
+	strmr = ibv_reg_mr(pd, strBuff, 1 * sizeof (u_char), IBV_ACCESS_REMOTE_READ);
+	if (!strmr)
+		return 1;
 
-	qp_attr.cap.max_send_wr	 = 2;
+	qp_attr.cap.max_send_wr	 = 3;
 	qp_attr.cap.max_send_sge = 1;
 	qp_attr.cap.max_recv_wr	 = 1;
 	qp_attr.cap.max_recv_sge = 1;
@@ -186,6 +193,7 @@ int main(int argc, char *argv[])
 
 	/* Write/send two integers to be added */
 
+	
 	buf[0] = strtoul(argv[2], NULL, 0);
 	buf[1] = strtoul(argv[3], NULL, 0);
 
@@ -208,6 +216,32 @@ int main(int argc, char *argv[])
 	if (ibv_post_send(cm_id->qp, &send_wr, &bad_send_wr))
 		return 1;
 
+	
+	
+	
+	
+	sge.addr   = (uintptr_t) strBuff;
+	sge.length = sizeof (u_char);
+	sge.lkey   = strmr->lkey;
+	
+	
+	recv_wr.wr_id		    = 3;
+	recv_wr.opcode		    = IBV_WR_RDMA_READ;
+	recv_wr.sg_list		    = &sge;
+	recv_wr.num_sge		    = 1;
+	recv_wr.wr.rdma.rkey	    = ntohl(server_pdata.str_buf_va);
+	recv_wr.wr.rdma.remote_addr = ntohll(server_pdata.str_buf_va);
+	
+	if (ibv_post_send(cm_id->qp, &send_wr, &bad_send_wr)) {
+		printf("failed\n");
+		return 1;
+	}
+	
+	
+	
+	
+	
+	
 	sge.addr   = (uintptr_t) buf + sizeof (uint32_t);
 	sge.length = sizeof (uint32_t);
 	sge.lkey   = mr->lkey;
@@ -220,6 +254,10 @@ int main(int argc, char *argv[])
 
 	if (ibv_post_send(cm_id->qp, &send_wr, &bad_send_wr))
 		return 1;
+	
+	sge.addr   = (uintptr_t) buf;
+	sge.length = sizeof (uint32_t);
+	sge.lkey   = mr->lkey;
 
 	/* Wait for receive completion */
 
@@ -243,6 +281,8 @@ int main(int argc, char *argv[])
 		if (n < 0)
 			return 1;
 	}
+	
+	
 
 	return 0;
 }
