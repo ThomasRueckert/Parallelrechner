@@ -66,7 +66,7 @@ main (int argc, char *argv[])
       return 1;
     }
 
-  if (connect (sockfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) <
+  if (rconnect (sockfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) <
       0)
     {
       printf ("ERROR: connect() failed\n");
@@ -75,7 +75,7 @@ main (int argc, char *argv[])
 
   time = stopwatch ();
 
-  while ((n = read (sockfd, recvBuff, RECVBUFFSIZE)) > 0)
+  while ((n = rread (sockfd, recvBuff, RECVBUFFSIZE)) > 0)
     {
       bytes += n;
       continue;

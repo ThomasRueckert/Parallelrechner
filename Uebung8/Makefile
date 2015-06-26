@@ -1,10 +1,10 @@
-CFLAGS += -Wall -lrdmacm
+CFLAGS += -Wall 
 
-all: client server
+all: clientSock serverSock
 
 %: %.c
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS) 
 
 clean:
-	rm -f client
-	rm -f server
+	rm -f clientSock
+	rm -f serverSock

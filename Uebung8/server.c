@@ -1,5 +1,5 @@
 #include <sys/types.h>
-#include <sys/socket.h>
+#include <rdma/rsocket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <stdio.h>
@@ -19,11 +19,11 @@ main (int argc, char *argv[])
 
   char *sendBuff = NULL;
 
-  listenfd = socket (AF_INET, SOCK_STREAM, 0);
+  listenfd = rsocket (AF_INET, SOCK_STREAM, 0);
 
   int on = 1;
 
-  if (setsockopt (listenfd, SOL_SOCKET,
+  if (rsetsockopt (listenfd, SOL_SOCKET,
 		  SO_REUSEADDR, (const char *) &on, sizeof (on)))
     {
       printf ("ERROR: setsockopt() failed\n");
@@ -37,17 +37,35 @@ main (int argc, char *argv[])
   serv_addr.sin_addr.s_addr = htonl (INADDR_ANY);
   serv_addr.sin_port = htons (1337);
 
-  bind (listenfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr));
+  rbind (listenfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr));
 
-  listen (listenfd, 10);
+  rlisten (listenfd, 10);
 
   while (1)
     {
-      connfd = accept (listenfd, (struct sockaddr *) NULL, NULL);
+      connfd = raccept (listenfd, (struct sockaddr *) NULL, NULL);
 
-      write (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
+      rwrite (connfd, sendBuff, SENDBUFFSIZE);
 
-      close (connfd);
+      rclose (connfd);
       sleep (1);
     }
 }
