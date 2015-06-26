@@ -1,0 +1,40 @@
+read() bandwidth =
+	 2449614780.894186 bytes/s
+	 2336.134702 mebibytes/s
+	 18.251052 gigabit/s
+[rutho@e5-2680v2-2 ~]$ ./client 192.168.2.60
+read() bandwidth =
+	 4541187032.437985 bytes/s
+	 4330.813439 mebibytes/s
+	 33.834480 gigabit/s
+[rutho@e5-2680v2-2 ~]$ ./client 192.168.2.60
+read() bandwidth =
+	 4472511202.005357 bytes/s
+	 4265.319063 mebibytes/s
+	 33.322805 gigabit/s
+[rutho@e5-2680v2-2 ~]$ ./client 192.168.2.60
+read() bandwidth =
+	 4555717030.195937 bytes/s
+	 4344.670325 mebibytes/s
+	 33.942737 gigabit/s
+[rutho@e5-2680v2-2 ~]$ ./client 192.168.2.60
+read() bandwidth =
+	 4564429783.089733 bytes/s
+	 4352.979453 mebibytes/s
+	 34.007652 gigabit/s
+[rutho@e5-2680v2-2 ~]$ ./client 192.168.2.60
+read() bandwidth =
+	 4569171812.045156 bytes/s
+	 4357.501804 mebibytes/s
+	 34.042983 gigabit/s
+[rutho@e5-2680v2-2 ~]$ ./client 192.168.2.60
+read() bandwidth =
+	 4553303488.248214 bytes/s
+	 4342.368592 mebibytes/s
+	 33.924755 gigabit/s
+[rutho@e5-2680v2-2 ~]$ ./client 192.168.2.60
+read() bandwidth =
+	 4563851596.142773 bytes/s
+	 4352.428051 mebibytes/s
+	 34.003344 gigabit/s
+

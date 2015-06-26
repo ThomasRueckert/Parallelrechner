@@ -1,0 +1,10 @@
+CFLAGS += -Wall -lrdmacm
+
+all: clientRsock serverRock
+
+%: %.c
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS) 
+
+clean:
+	rm -f clientRsock
+	rm -f serverRock
